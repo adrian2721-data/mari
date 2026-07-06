@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petalos · Carrito de flores</title>
+  <!-- Font Awesome 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/carro.css') }}">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <h1><i class="fas fa-seedling"></i>Petalos <span>· carrito</span></h1>
+    </div>
+
+    <a href="{{ url_for('index') }}" class="back-link" id="backToCatalogBtn"><i class="fas fa-arrow-left"></i>
+      Catálogo</a>
+  </header>
+
+  <!-- CARRITO -->
+  <div class="cart-container" id="cartContainer">
+    <div class="cart-header">
+      <h2><i class="fas fa-shopping-bag"></i> Tu pedido</h2>
+      <span class="cart-total-items" id="cartTotalItems">{{carrito.total_items}} artículos</span>
+    </div>
+
+    <!-- lista dinámica -->
+    <div id="cartList" class="cart-list">
+
+
+      {% if not items %}
+      <div class="empty-cart">
+        <i class="fas fa-shopping-bag"></i>
+        <p>Tu carrito está vacío</p>
+        <p style="margin-top: 0.8rem;"><a href="{{ url_for('index') }}" id="goToCatalogEmpty">Explorar catálogo</a></p>
+      </div>
+      {% else %}
+      {% for i in items%}
+      <div class="cart-item" data - index="${index}">
+        <div class="item-info">
+          <div class="item-details">
+            <span class="item-name">{{i.nombre}}</span>
+          </div>
+        </div>
+        <div class="item-price">{{i.precio}}</div>
+        <div class="item-actions">
+          <div class="qty-control">
+            <button class="qty-btn decr" data-action="decr" data-id="{{i.producto_id}}"><i
+                class="fas fa-minus"></i></button>
+            <span class="qty-number">{{i.cantidad}}</span>
+            <button class="qty-btn incr" data-action="incr" data-id="{{i.producto_id}}"><i
+                class="fas fa-plus"></i></button>
+          </div>
+          <button class="remove-item remove" data-action="remove" data-id="{{i.producto_id}}"><i
+              class="fas fa-trash-alt"></i></button>
+        </div>
+        </di>
+        <!-- los items se renderizan con js -->
+      </div>
+      {% endfor %}
+      <!-- resumen / vacío -->
+      <div id="cartSummary" class="cart-summary">
+        <!-- se llena con js -->
+        <span class="total-label"> Total</spa>
+          <span class="total-price">{{carrito.total}}</span>
+          <button class="checkout-btn" id="checkoutBtn"><i class="fas fa-credit-card"></i> <a href="{{ url_for('contacto') }}">Finalizar compra</a> </button>
+
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+
+
+
+  <!-- footer -->
+  <div class="footer-note">
+    <span><i class="fas fa-leaf"></i> flores frescas · entrega el mismo día</span>
+    <span><i class="fas fa-heart" style="color: #c78a6b;"></i> calidad garantizada</span>
+  </div>
+  <script src="{{ url_for('static', path='/js/jquery.min.js') }}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $(document).on('click', '.decr', function (e) {
+        e.preventDefault()
+        id = $(this).data('id')
+        $.ajax({
+          type: "post",
+          url: "carrito/restar/" + id,
+          success: function (response) {
+            $('#cartContainer').html(response)
+          }
+        });
+      });
+      $(document).on('click', '.incr', function (e) {
+        e.preventDefault()
+        id = $(this).data('id')
+        $.ajax({
+          type: "post",
+          url: "carrito/sumar/" + id,
+          success: function (response) {
+            $('#cartContainer').html(response)
+          }
+        });
+      });
+      $(document).on('click', '.remove', function (e) {
+        e.preventDefault()
+        id = $(this).data('id')
+        $.ajax({
+          type: "post",
+          url: "carrito/eliminar/" + id,
+          success: function (response) {
+            $('#cartContainer').html(response)
+          }
+        });
+      })
+    })
+  </script>
+</body>
+
+</html>

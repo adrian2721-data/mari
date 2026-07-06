@@ -1,0 +1,51 @@
+<div class="cart-container" id="cartContainer">
+  <div class="cart-header">
+    <h2><i class="fas fa-shopping-bag"></i> Tu pedido</h2>
+    <span class="cart-total-items" id="cartTotalItems">{{carrito.total_items}} artículos</span>
+  </div>
+
+  <!-- lista dinámica -->
+  <div id="cartList" class="cart-list">
+
+
+    {% if not items %}
+    <div class="empty-cart">
+      <i class="fas fa-shopping-bag"></i>
+      <p>Tu carrito está vacío</p>
+      <p style="margin-top: 0.8rem;"><a href="{{ url_for('index') }}" id="goToCatalogEmpty">Explorar catálogo</a></p>
+    </div>
+    {% else %}
+    {% for i in items%}
+    <div class="cart-item" data - index="${index}">
+      <div class="item-info">
+        <div class="item-details">
+          <span class="item-name">{{i.nombre}}</span>
+        </div>
+      </div>
+      <div class="item-price">{{i.precio}}</div>
+      <div class="item-actions">
+        <div class="qty-control">
+          <button class="qty-btn decr" data-action="decr" data-id="{{i.producto_id}}"><i
+              class="fas fa-minus"></i></button>
+          <span class="qty-number">{{i.cantidad}}</span>
+          <button class="qty-btn incr" data-action="incr" data-id="{{i.producto_id}}"><i
+              class="fas fa-plus"></i></button>
+        </div>
+        <button class="remove-item remove" data-action="remove" data-id="{{i.producto_id}}"><i
+            class="fas fa-trash-alt"></i></button>
+      </div>
+      </di>
+      <!-- los items se renderizan con js -->
+    </div>
+    {% endfor %}
+    <!-- resumen / vacío -->
+    <div id="cartSummary" class="cart-summary">
+      <!-- se llena con js -->
+      <span class="total-label"> Total</spa>
+        <span class="total-price">{{carrito.total}}</span>
+        <button class="checkout-btn" id="checkoutBtn"><i class="fas fa-credit-card"></i> <a
+            href="{{ url_for('contacto') }}">Finalizar compra</a> </button>
+    </div>
+    {% endif %}
+  </div>
+</div>

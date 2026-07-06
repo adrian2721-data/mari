@@ -1,0 +1,33 @@
+{% if not dato %}
+<div class="no-results">
+    <i class="fas fa-seedling"></i>
+    No encontramos flores · prueba con otro filtro
+</div>
+
+{% else %}
+
+
+{% for i in dato %}
+<div class="flower-card" data-id="{{i.id}}">
+    <div class="flower-img">
+        {% if i.imagen and i.imagen != "" %}
+        <img src="/static/uploads/{{i.imagen}}" alt="{{i.name}}" loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-error" style="display: none;">
+            <i class="fas fa-image"></i>
+            <span>{{i.name}}</span>
+        </div>
+        {% else %}
+        <i class="fas fa-seedling placeholder-icon"></i>
+        {% endif %}
+    </div>
+
+    <div class="flower-name">{{i.name}}</div>
+    <div class="flower-price">${{i.price}}<small>c/u</small></div>
+
+    <button class="btn-add btnCarro" data-id="{{i.id}}">
+        <i class="fas fa-plus"></i> Añadir al carrito
+    </button>
+</div>
+{% endfor %}
+{% endif %}

@@ -1,0 +1,17 @@
+{% for i in dato %}
+
+<div class="flower-card" data-id="id">
+    <div class="flower-img">
+        <i class="fas ${iconClass}" style="font-size: 3.6rem;"></i>
+        <span style="position: absolute; font-size: 2.8rem; opacity: 0.3; margin-top: 1.2rem;">imagen</span>
+    </div>
+    <div class="flower-name">{{i.name}}</div>
+
+
+    <span class="flower-category"><i class="fas fa-tag" style="margin-right: 5px;"></i>{{i.categoria.name}}</span>
+    <div class="flower-price">{{i.price}}<small>c/u</small></div>
+    <button class="btn-add" data-id="${flower.id}">
+        <i class="fas fa-plus"></i> Añadir al carrito
+    </button>
+</div>
+{% endfor %}

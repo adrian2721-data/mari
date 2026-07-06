@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto · Pétalos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/contacto.css">
+</head>
+<body>
+    <div class="contact-container">
+        <div class="contact-header">
+            <a href="{{ url_for('index') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+            <h1><i class="fas fa-envelope"></i> Contáctanos</h1>
+            <p>Déjanos tus datos y te contactaremos por WhatsApp</p>
+        </div>
+
+        <form id="contactForm" class="contact-form" action="{{ url_for('mensaje') }}" method="POST">
+            <div class="form-group">
+                <label for="nombre">
+                    <i class="fas fa-user"></i> Nombre completo
+                </label>
+                <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    placeholder="Ej: María Pérez" 
+                    required
+                    autocomplete="name"
+                >
+                <span class="error-message" id="nombreError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono">
+                    <i class="fab fa-whatsapp"></i> Teléfono WhatsApp
+                </label>
+                <div class="phone-input-wrapper">
+                    <span class="phone-prefix">+53</span>
+                    <input 
+                        type="tel" 
+                        id="telefono" 
+                        name="telefono" 
+                        placeholder="Ej: 51234567" 
+                        required
+                        maxlength="8"
+                        autocomplete="tel"
+                        pattern="[0-9]{8}"
+                    >
+                </div>
+                <small class="help-text">
+                    <i class="fas fa-info-circle"></i> 
+                    Ingresa solo los 8 dígitos sin el +53. Debe estar registrado en WhatsApp.
+                </small>
+                <span class="error-message" id="telefonoError"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="mensaje">
+                    <i class="fas fa-comment"></i> Mensaje (opcional)
+                </label>
+                <textarea 
+                    id="mensaje" 
+                    name="mensaje" 
+                    rows="4" 
+                    placeholder="Quisiera..."
+                ></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Enviar mensaje
+                </button>
+                <button type="reset" class="btn-reset">
+                    <i class="fas fa-undo"></i> Limpiar
+                </button>
+            </div>
+
+            <div class="form-footer">
+                <p>
+                    <i class="fas fa-shield-alt"></i> 
+                    Tus datos están seguros. Solo los usaremos para contactarte.
+                </p>
+            </div>
+        </form>
+
+        <!-- Mensaje de éxito -->
+        <div id="successMessage" class="success-message" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <h3>¡Mensaje enviado!</h3>
+            <p>Te contactaremos a la brevedad por WhatsApp.</p>
+            <button onclick="window.location.href='/'" class="btn-continue">
+                <i class="fas fa-home"></i> Volver al inicio
+            </button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/contacto.js"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Petalos · Catálogo de Flores</title>
+  <!-- Font Awesome 5 (iconos) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/catalogo.css') }}">
+
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <h1><i class="fas fa-seedling"></i>Petalos <span>· catálogo</span></h1>
+    </div>
+    <div class="cart-icon">
+      <i class="fas fa-shopping-bag"></i>
+      <a style="text-decoration: none;color: black;" href="{{ url_for('ver_carrito') }}"><span>Carrito</span></a>
+      <span class="cart-count" id="cartCounter">{{carro.total_items}}</span>
+    </div>
+  </header>
+
+
+  <!-- FILTROS -->
+  <div class="filter-bar">
+    <label><i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Buscar flor..." />
+    </label>
+    <div class="filter-actions">
+      <button class="btn-filter active" id="searchBtn"><i class="fas fa-search"></i>s buscar</button>
+      <button class="btn-filter active" id="resetFiltersBtn"><i class="fas fa-undo-alt"></i> Restablecer</button>
+    </div>
+  </div>
+
+
+
+
+  <!-- En catalogo.html, reemplaza el loop de productos -->
+  <div class="catalog-grid" id="catalogGrid">
+    {% if not dato %}
+    <div class="no-results">
+      <i class="fas fa-seedling"></i>
+      No encontramos flores · prueba con otro filtro
+    </div>
+
+    {% else %}
+
+
+    {% for i in dato %}
+    <div class="flower-card" data-id="{{i.id}}">
+      <div class="flower-img">
+        {% if i.imagen and i.imagen != "" %}
+        <img src="/static/uploads/{{i.imagen}}" alt="{{i.name}}" loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-error" style="display: none;">
+          <i class="fas fa-image"></i>
+          <span>{{i.name}}</span>
+        </div>
+        {% else %}
+        <i class="fas fa-seedling placeholder-icon"></i>
+        {% endif %}
+      </div>
+
+      <div class="flower-name">{{i.name}}</div>
+      <div class="flower-price">${{i.price}}<small>c/u</small></div>
+
+      <button class="btn-add btnCarro" data-id="{{i.id}}">
+        <i class="fas fa-plus"></i> Añadir al carrito
+      </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <!-- Agrega al final del body -->
+  <div id="imageModal" class="image-modal" style="display: none;">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImage">
+  </div>
+
+  <!-- footer -->
+  <div class="footer-note">
+    <span><i class="fas fa-leaf"></i> flores frescas · temporada</span>
+    <span><i class="fas fa-heart" style="color: #c78a6b;"></i> 12 variedades</span>
+  </div>
+  <script src="{{ url_for('static', path='/js/jquery.min.js') }}"></script>
+  <script>
+    $(document).ready(function () {
+      $(document).on('click', '#searchBtn', function (e) {
+        filtro = $('#searchInput').val()
+        categoria = $('#categoryFilter').val()
+        $.ajax({
+          type: "get",
+          url: "items/" + filtro,
+          success: function (response) {
+            $('#catalogGrid').html(response)
+
+          }
+        });
+      })
+      $(document).on('click', '#resetFiltersBtn', function (e) {
+        $('#searchInput').val("")
+        $('#categoryFilter').val("0")
+        $.ajax({
+          type: "get",
+          url: "todos",
+          success: function (response) {
+            $('#catalogGrid').html(response)
+
+          }
+        });
+      })
+      $(document).on('click', '.btnCarro', function (e) {
+        e.preventDefault()
+        id = $(this).data('id')
+        // alert(id)
+        $.ajax({
+          type: "post",
+          url: "carrito/agregar/" + id,
+          dataType: "json",
+          success: function (response) {
+            $('#cartCounter').html(response.total_items)
+            // Guardar referencia al botón con jQuery
+            // Cambiar el contenido y estilo
+            $("button[data-id=" + id + "]").html('<i class="fas fa-check"></i> Añadido');
+            $("button[data-id=" + id + "]").css('background', '#dbb8a6');
+
+            // Restaurar después de 800ms
+            setTimeout(() => {
+              $("button[data-id=" + id + "]").html('<i class="fas fa-plus"></i> Añadir al carrito');
+              $("button[data-id=" + id + "]").css('background', '#f0e6de');
+            }, 800);
+          }
+        });
+
+
+      });
+
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImage');
+      const closeBtn = document.querySelector('.modal-close');
+
+      // Abrir modal al hacer click en la imagen
+      $(document).on('click', '.flower-img', function (e) {
+        e.stopPropagation();
+        const img = $(this).find('img');
+        if (img.length && img.attr('src')) {
+          modal.style.display = 'block';
+          modalImg.src = img.attr('src');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+
+      // Cerrar modal
+      function closeModal() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+
+      closeBtn.onclick = closeModal;
+      modal.onclick = function (e) {
+        if (e.target === modal) closeModal();
+      };
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+      });
+    });
+
+
+
+
+  </script>
+</body>
+
+</html>
