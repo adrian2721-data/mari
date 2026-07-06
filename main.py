@@ -284,9 +284,9 @@ async def mensaje(request: Request,data: Annotated[FormData, Form()], session: S
         texto+=f"nombre producto:{i.nombre},precio:{i.precio},cantidad:{i.cantidad},subtototal:${i.subtotal}\n"
     texto+=f"total:${resumen['total']}"
     if data.mensaje !="":
-        whatsapp(data.telefono,f"Buenas {data.nombre},este es su pedidio:\n{texto}\n mensaje:{data.mensaje}")
+        whatsapp(data.telefono,f"Buenas {data.nombre},este es su pedido:\n{texto}\n mensaje:{data.mensaje}")
     else:
-        whatsapp(data.telefono,f"Buenas {data.nombre},este es su pedidio:\n{texto}\n")
+        whatsapp(data.telefono,f"Buenas {data.nombre},este es su pedido:\n{texto}\n")
     carrito.vaciar()
     carrito = get_carrito(request)
     resultado = session.exec(select(Producto)).all()
